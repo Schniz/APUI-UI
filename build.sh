@@ -1,0 +1,1 @@
+lessc public/scripts/vendor/bootstrap/less/bootstrap.less > public/css/bootstrap.css
