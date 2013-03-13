@@ -31,6 +31,14 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'views/box', 'views/comma
         window.app.trigger('changedConnections:removed', {target: target, src: src, endpoints: info.endpoints});
         return true;
       });
+
+      $("#droppable-area").resizable({
+        minWidth: '100%',
+        resize: function(event, ui) {
+          ui.size.width = ui.originalSize.width;
+        }
+      });
+
     },
 
     addBlock : function(params) {

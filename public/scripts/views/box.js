@@ -54,11 +54,6 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
         _(attributes).extend(this.model.get('attributes'));
 
         console.log(attributes);
-
-        // var attributes = {};
-        // attributes[rel] = $value.val();
-        // attributes = _(attributes).extend(this.model.get('attributes'));
-        // this.model.set('attributes', attributes);
       }, this));
     },
 
@@ -78,6 +73,7 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
 
       // Plumb it up
       jsPlumb.draggable(this.getBoxID(), {
+        containment: "#droppable-area",
         stop: $.proxy(function() {
           var position = this.$el.position();
           this.model.set('y', position.top);

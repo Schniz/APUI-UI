@@ -1,4 +1,5 @@
 <ul class="nav nav-pills">
+  <li class="disabled"><a data-toggle="tabs" class="disabled">Libraries:</a></li>
 {{#modules}}
   <li><a href="#library-{{name}}" data-toggle="tabs">{{name}}</a></li>
 {{/modules}}
@@ -7,6 +8,7 @@
 <div class="tab-content">
 {{#modules}}
   <div id="library-{{name}}" class="btn-group tab-pane">
+      <a class="btn btn-small btn-info disabled">Commands:</a>
     {{#commands}}
       <a href="#add/{{tag}}" data-tag="{{tag}}" class="add-command-block btn btn-small btn-info">{{label}}</a>
     {{/commands}}

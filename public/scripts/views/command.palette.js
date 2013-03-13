@@ -9,7 +9,7 @@ define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'mode
     },
 
     events: {
-      "click .tab-pane a" : 'addCommand'
+      "click .tab-pane a.add-command-block" : 'addCommand'
     },
 
     addCommand : function(e) {
@@ -31,9 +31,7 @@ define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'mode
         outputs: 2,
         inputs: 2,
         label: "Nisso",
-        tag: "Nisso",
-        x: 321,
-        y: 85
+        tag: "Nisso"
       });
 
       window.cmd2 = new Command({
@@ -45,16 +43,14 @@ define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'mode
         outputs: 2,
         inputs: 1,
         inputTypes: ['int'],
-        label: "Int:Nisso",
-        x: 603,
-        y: 93
+        tag: 'IntNisso',
+        label: "Int:Nisso"
       });
 
       var command = new Command({
         outputs: 1,
         inputs: 1,
-        x: 71,
-        y: 86
+        tag: 'DefaultTag'
       });
 
 
@@ -75,8 +71,7 @@ define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'mode
     render : function() {
       var data = { modules : this.modules.toJSON(true) };
       this.$el.empty().append(Template(data));
-      $(".nav-pills a").click(function(e) {
-        alert('hey');
+      $(".nav-pills a").not(":first").click(function(e) {
         e.preventDefault();
         $(this).tab('show');
       }).first().tab('show');
