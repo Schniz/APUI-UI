@@ -10,11 +10,13 @@ define(['jquery', 'backbone', 'underscore', 'models/command', 'views/box', 'jque
           { label: "Hohoho", type: "text", value: 'My Value' }
         ],
         outputs: 2,
+        inputs: 2,
         label: "Nisso"
       });
 
       var command = new Command({
-        outputs: 1
+        outputs: 1,
+        inputs: 1
       });
 
       window.boxView = new BoxView({ model: command });

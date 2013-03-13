@@ -20,7 +20,7 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
     connectTo: function(anotherBoxView) {
       jsPlumb.connect({
         source: this.$el,
-        target: anotherBox.$el
+        target: anotherBoxView.$el
       });
     },
 
@@ -43,16 +43,36 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
       // Plumb it up
       jsPlumb.draggable(this.getBoxID());
 
+      // Initialize Outputs
       if (this.model.get('outputs') >= 1) {
         jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
-            anchor: "TopRight"
+            anchor: "TopRight",
+            isSource: true
         });
 
         if (this.model.get('outputs') >= 2) {
           jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
-            anchor: "BottomRight"
+            anchor: "BottomRight",
+            isSource: true
+          });
+        }
+      }
+
+      // Initialize Inputs
+      if (this.model.get('inputs') >= 1) {
+        jsPlumb.addEndpoint(this.getBoxID(), {
+            endpoint: "Dot",
+            anchor: "TopLeft",
+            isTarget: true
+        });
+
+        if (this.model.get('inputs') >= 2) {
+          jsPlumb.addEndpoint(this.getBoxID(), {
+            endpoint: "Dot",
+            anchor: "BottomLeft",
+            isTarget: true
           });
         }
       }
