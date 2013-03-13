@@ -7,6 +7,10 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
       this.on('changedConnections:removed', this.removedConnection, this);
       window.appEvents.on('boxes:added', this.addBox, this);
 
+      $("#draggable-area").on('click', '.box-wrapper', function() {
+        console.log('clicked!');
+      })
+
       jsPlumb.bind('beforeDrop', function(info) {
         var src = $('#' + info.sourceId).data('model');
         var target = $('#' + info.targetId).data('model');
@@ -14,7 +18,7 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
         // Check if the inputType is in the input types
         for (var inputTypeId in target.inputTypes) {
           if (target.inputTypes[inputTypeId] === src.outputType) {
-            window.app.trigger('changedConnections:added', {target: target, src: src});
+            window.app.trigger('changedConnections:added', {target: target, src: src, endpoints: info.connection.endpoints});
 
             return true;
           }
@@ -26,7 +30,7 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
       jsPlumb.bind('beforeDetach', function(info) {
         var src = $('#' + info.sourceId).data('model');
         var target = $('#' + info.targetId).data('model');
-        window.app.trigger('changedConnections:removed', {target: target, src: src});
+        window.app.trigger('changedConnections:removed', {target: target, src: src, endpoints: info.endpoints});
         return true;
       });
 
@@ -94,17 +98,67 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
     },
 
     addedConnection: function(properties) {
-      this.boxes[properties.src.id].trigger('connections:added', {from: properties.src});
-      this.boxes[properties.target.id].trigger('connections:added', {to: properties.target});
+      var endpoint = 0;
+
+      for (var endpointId in properties.endpoints) {
+        var endpointValue = properties.endpoints[endpointId];
+
+        if (endpointValue.elementId === ('box-' + properties.src.id)) {
+          endpoint = (endpointValue.anchor.type === 'BottomRight') ? 1 : 0;
+        }
+      }
+
+      this.boxes[properties.src.id].trigger('connections:added', {from: properties.src, to: properties.target, endpoint: endpoint});
+      this.boxes[properties.target.id].trigger('connections:added', {from: properties.src, to: properties.target, endpoint: endpoint});
     },
 
     removedConnection: function(properties) {
-      this.boxes[properties.src.id].trigger('connections:removed', {from: properties.src});
-      this.boxes[properties.target.id].trigger('connections:removed', {to: properties.target});
+      var endpoint = 0;
+
+      for (var endpointId in properties.endpoints) {
+        var endpointValue = properties.endpoints[endpointId];
+
+        if (endpointValue.elementId === ('box-' + properties.src.id)) {
+          endpoint = (endpointValue.anchor.type === 'BottomRight') ? 1 : 0;
+        }
+      }
+
+      this.boxes[properties.src.id].trigger('connections:removed', {from: properties.src, to: properties.target, endpoint: endpoint});
+      this.boxes[properties.target.id].trigger('connections:removed', {from: properties.src, to: properties.target, endpoint: endpoint});
     },
 
     addBox: function(viewDetails) {
       this.boxes[viewDetails.id] = viewDetails.view;
+    },
+
+    createXml: function() {
+      var generatedXml = xml("Flow", {}, function() {
+        _(window.app.boxes).each(function(box) {
+          var model = (box.model.toJSON());
+          this.xml("Command", {type: model.tag, id: model.id, x: model.x, y: model.y}, function() {
+
+            // Previous
+            this.xml("Prev", {}, function() {
+              _(model.prev).each(function(id) {
+                this.xml("id", {}, function() {
+                  this.text(id.id);
+                });
+              }, this);
+            });
+
+            // Nexts
+            this.xml("Next", {}, function() {
+              _(model.next).each(function(id, endpoint) {
+                this.xml("id", {endpoint: endpoint}, function() {
+                  this.text(id.id);
+                });
+              }, this);
+            });      
+          });
+        }, this);
+      });
+
+      console.log(generatedXml);
     }
   });
 });

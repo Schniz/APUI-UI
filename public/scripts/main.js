@@ -3,6 +3,7 @@ require.config({
     'hgn': 'vendor/requirejs-plugins/hgn',
     'text': 'vendor/requirejs-plugins/text',
 
+    'xml-builder': 'vendor/xml-builder/lib/xml_builder',
     'jquery': 'vendor/jquery/jquery',
     'underscore': 'vendor/underscore-amd/underscore',
     'backbone': 'vendor/backbone-amd/backbone',
@@ -26,8 +27,9 @@ require.config({
   }
 });
 
-require(['jquery', 'jsplumb', 'views/app', 'jquery-ui'], function($, jsPlumb, AppView) {
+require(['jquery', 'jsplumb', 'views/app', 'xml-builder', 'jquery-ui'], function($, jsPlumb, AppView, XmlBuilder) {
   window.appEvents = _.extend({}, Backbone.Events);
 
+  this.xmlBuilder = XmlBuilder;
   this.app = new AppView;
 });

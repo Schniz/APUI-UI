@@ -35,13 +35,6 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
       });
     },
 
-    initializeAsOutput: function() {
-      jsPlumb.addEndpoint(this.getBoxID(), {
-        endpoint:"Dot",
-          anchor:"RightMiddle"
-      });
-    },
-
     getBoxID : function() {
       return "box-" + this.model.get('id');
     },
@@ -106,21 +99,33 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
     },
 
     addConnection: function(info) {
-      if (info.from) {
+      console.log('hey');
+
+      var id = this.model.get('id');
+      var to = info.to;
+      var from = info.from;
+      var endpoint = endpoint;
+
+      // Check if this is the block that got the data [ ] => [X]
+      if (id === to.id) {
+        // Set this previous
         var prevs = this.model.get('prev');
 
-        if (!_(prevs).contains(info.from)) {
-          prevs.push(info.from);
-          this.model.set('prev', prevs);
+        if (!_(prevs).contains(from)) {
+          var prevNew = _([from]).union(prevs);
+          this.model.set('prev', prevNew);
         }
-      }
-
-      if (info.to) {
+      } else if (id === from.id) { // Check if this is the block that sent the data [X] => [ ]
         var nexts = this.model.get('next');
 
-        if (!_(nexts).contains(info.to)) {
-          nexts.push(info.to);
-          this.model.set('next', nexts);
+        this.model.set('awesome', 'very');
+
+        if (!_(nexts).contains(to)) {
+          var nextNew = {};
+          nextNew[info.endpoint] = to;
+          _(nextNew).extend(nexts);
+
+          this.model.set('next', nextNew);
         }
       }
     },
@@ -136,6 +141,8 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
         var nexts = this.model.get('next');
         nexts = _(nexts).without(info.to);
         this.model.set('next', nexts);
+
+        console.log(this.model.get('next'));
       }
     }
   });
