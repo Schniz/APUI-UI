@@ -1,0 +1,15 @@
+<ul class="nav nav-pills">
+{{#modules}}
+  <li><a href="#library-{{name}}" data-toggle="tabs">{{name}}</a></li>
+{{/modules}}
+</ul>
+
+<div class="tab-content">
+{{#modules}}
+  <div id="library-{{name}}" class="btn-group tab-pane">
+    {{#commands}}
+      <a href="#add/{{tag}}" data-tag="{{tag}}" class="add-command-block btn btn-small btn-info">{{label}}</a>
+    {{/commands}}
+  </div>
+{{/modules}}
+</div>

@@ -10,6 +10,10 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
       fillStyle: 'purple'
     },
 
+    events: {
+      'change input' : 'updateAttributes'
+    },
+
     initialize: function() {
       
       console.log(this.model);
@@ -26,6 +30,9 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
       window.appEvents.trigger('boxes:added', {id: id, view: this});
       this.bind('connections:added', this.addConnection, this);
       this.bind('connections:removed', this.removeConnection, this);
+      _(this).bind('updateAttributes');
+
+      this.render();
     },
 
     connectTo: function(anotherBoxView) {
@@ -33,6 +40,26 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
         source: this.$el,
         target: anotherBoxView.$el
       });
+    },
+
+    updateAttributes : function(e) {
+      this.$el.find("input").each($.proxy(function(index, value) {
+        var $value = $(value);
+        var rel = $value.attr("data-name");
+        console.log(rel);
+        var attributes = {};
+
+        attributes[rel] = $value.val();
+
+        _(attributes).extend(this.model.get('attributes'));
+
+        console.log(attributes);
+
+        // var attributes = {};
+        // attributes[rel] = $value.val();
+        // attributes = _(attributes).extend(this.model.get('attributes'));
+        // this.model.set('attributes', attributes);
+      }, this));
     },
 
     getBoxID : function() {
@@ -44,12 +71,19 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
               .attr("id", this.getBoxID())
               .data("model", this.model.toJSON())
               .append(Template(this.model.toJSON()))
+              .css({top: this.model.get('y'), left: this.model.get('x')})
               .appendTo("#droppable-area");
 
       console.log(this.getBoxID());
 
       // Plumb it up
-      jsPlumb.draggable(this.getBoxID());
+      jsPlumb.draggable(this.getBoxID(), {
+        stop: $.proxy(function() {
+          var position = this.$el.position();
+          this.model.set('y', position.top);
+          this.model.set('x', position.left);
+        }, this)
+      });
 
       // Initialize Outputs
       if (this.model.get('outputs') >= 1) {

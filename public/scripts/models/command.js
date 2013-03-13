@@ -6,6 +6,8 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
       label: 'Untitled',
       tag: 'UntitledTag',
       id: 999,
+      x: 10,
+      y: 10,
       attributes: [],
       next: [],
       prev: [],

@@ -1,15 +1,13 @@
-define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/box', 'jquery-ui'], function($, Backbone, _, jsPlumb, Command, BoxView) {
+define(['jquery', 'backbone', 'underscore', 'jsplumb', 'views/box', 'views/command.palette', 'models/command', 'jquery-ui'], function($, Backbone, _, jsPlumb, BoxView, CommandPaletteView, Command) {
   return Backbone.View.extend({
     boxes: {},
+    commandPaletteView: new CommandPaletteView,
 
     initialize: function() {
       this.on('changedConnections:added', this.addedConnection, this);
       this.on('changedConnections:removed', this.removedConnection, this);
+      window.appEvents.on('addBlock:new', this.addBlock, this);
       window.appEvents.on('boxes:added', this.addBox, this);
-
-      $("#draggable-area").on('click', '.box-wrapper', function() {
-        console.log('clicked!');
-      })
 
       jsPlumb.bind('beforeDrop', function(info) {
         var src = $('#' + info.sourceId).data('model');
@@ -33,58 +31,11 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
         window.app.trigger('changedConnections:removed', {target: target, src: src, endpoints: info.endpoints});
         return true;
       });
-
-
-      this.createFakeData();
-
-      // Box
-
-      // jsPlumb.draggable("box-1");
-      // jsPlumb.draggable("box-2");
-
-      // jsPlumb.addEndpoint("box-1", {
-      //     endpoint:"Dot",
-      //     anchor:"RightMiddle"
-      // });
-
-      // jsPlumb.addEndpoint("box-2", {
-      //     endpoint:"Dot",
-      //     anchor:"RightMiddle"
-      // });
     },
 
-    createFakeData: function() {
-      window.cmd1 = new Command({
-        attributes: [
-          { label: "Blabla", type: "text" },
-          { label: "Email", type: "email" },
-          { label: "Hohoho", type: "text", value: 'My Value' }
-        ],
-        outputs: 2,
-        inputs: 2,
-        label: "Nisso"
-      });
-
-      window.cmd2 = new Command({
-        attributes: [
-          { label: "Blabla", type: "text" },
-          { label: "Email", type: "email" },
-          { label: "Hohoho", type: "text", value: 'My Value' }
-        ],
-        outputs: 2,
-        inputs: 1,
-        inputTypes: ['int'],
-        label: "Int:Nisso"
-      });
-
-      var command = new Command({
-        outputs: 1,
-        inputs: 1
-      });
-
-      window.boxView = new BoxView({ model: command });
-      window.boxView2 = new BoxView({ model: cmd1 });
-      window.boxView3 = new BoxView({ model: cmd2 });
+    addBlock : function(params) {
+      var cmd = new Command(params[0]);
+      window.latestBlock = new BoxView({model: cmd});
     },
 
     changedFlow: function(model) {
@@ -153,12 +104,26 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'models/command', 'views/
                   this.text(id.id);
                 });
               }, this);
+            }); 
+
+            // Attributes
+            this.xml("Attributes", {}, function() {
+              _(model.attributes).each(function(attribute) {
+                var attributeObj = { name: attribute.name };
+
+                // Check if we need to add a value
+                if (attribute.value !== undefined) {
+                  _(attributeObj).extend({value: attribute.value});
+                }
+
+                this.xml("attr", attributeObj);
+              }, this);
             });      
           });
         }, this);
       });
 
-      console.log(generatedXml);
+      return generatedXml;
     }
   });
 });

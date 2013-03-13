@@ -40,6 +40,7 @@
       #droppable-area {
         background-color: rgb(255, 234, 251);
         height: 350px;
+        position:relative;
       }
     </style>
 
@@ -81,28 +82,26 @@
      </div>
     </div>
 
-    <div class="container" id="droppable-area">
-      <!-- <div id="box-1" class="box-wrapper">
-        <div class="box">
-          <h1>
-            Simple Input
-          </h1>
-          <input type="text" class="hideable" placeholder="Text" />
-          <input type="text" class="hideable" placeholder="Another Text" />
-          <input type="text" class="hideable" placeholder="Another Text" />
+    <div class="container" id="command-palette">
+      <ul class="nav nav-tabs">
+        <li><a href="#library-example" data-toggle="tabs">Example 1</a></li>
+        <li><a href="#library-example2">Example 2</a></li>
+        <li><a href="#library-example3">Example 3</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="library-example"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="span2">
+          Hello
+        </div>
+        <div class="span10" id="droppable-area">
         </div>
       </div>
-
-      <div id="box-2" class="box-wrapper">
-        <div class="box">
-          <h1>
-            Simple Input
-          </h1>
-          <input type="text" class="hideable" placeholder="Text" />
-          <input type="text" class="hideable" placeholder="Another Text" />
-          <input type="text" class="hideable" placeholder="Another Text" />
-        </div>
-      </div> -->
     </div>
 
     <script data-main="scripts/main" src="scripts/vendor/requirejs/require.js"></script>
