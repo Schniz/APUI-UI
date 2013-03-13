@@ -7,6 +7,42 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="css/bootstrap.css" />
+
+    <style>
+      .box-wrapper {
+        position: absolute;
+        width: 220px;
+      }
+
+      .box {
+        background-color: rgb(255, 202, 242);
+        padding: 10px;
+        margin: 10px;
+        border-radius: 10px;
+        text-align: center;
+
+        cursor: pointer;
+      }
+
+      .box h1 {
+        font-size: 14pt;
+        line-height: 14px;
+        font-weight: bold;
+        margin: 10px;
+
+        cursor: inherit;
+      }
+
+      .box input {
+        margin: 3px;
+      }
+
+      #droppable-area {
+        background-color: rgb(255, 234, 251);
+        height: 350px;
+      }
+    </style>
+
   </head>
 
   <body>
@@ -45,8 +81,28 @@
      </div>
     </div>
 
-    <div class="container">
-      Hey!
+    <div class="container" id="droppable-area">
+      <!-- <div id="box-1" class="box-wrapper">
+        <div class="box">
+          <h1>
+            Simple Input
+          </h1>
+          <input type="text" class="hideable" placeholder="Text" />
+          <input type="text" class="hideable" placeholder="Another Text" />
+          <input type="text" class="hideable" placeholder="Another Text" />
+        </div>
+      </div>
+
+      <div id="box-2" class="box-wrapper">
+        <div class="box">
+          <h1>
+            Simple Input
+          </h1>
+          <input type="text" class="hideable" placeholder="Text" />
+          <input type="text" class="hideable" placeholder="Another Text" />
+          <input type="text" class="hideable" placeholder="Another Text" />
+        </div>
+      </div> -->
     </div>
 
     <script data-main="scripts/main" src="scripts/vendor/requirejs/require.js"></script>
