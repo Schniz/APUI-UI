@@ -2,9 +2,15 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
   return Backbone.View.extend({
     className: 'box-wrapper',
 
-    initialize: function() {
+    inputStyle : {
+      fillStyle: 'pink'
+    },
 
-      className:
+    outputStyle : {
+      fillStyle: 'purple'
+    },
+
+    initialize: function() {
       
       console.log(this.model);
 
@@ -12,9 +18,14 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
         window.latestID = 0;
       }
 
-      this.model.set('id', window.latestID);
+      var id = window.latestID;
       window.latestID++;
-      //
+
+      // add to the app's boxes
+      this.model.set('id', id);
+      window.appEvents.trigger('boxes:added', {id: id, view: this});
+      this.bind('connections:added', this.addConnection, this);
+      this.bind('connections:removed', this.removeConnection, this);
     },
 
     connectTo: function(anotherBoxView) {
@@ -36,7 +47,11 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
     },
 
     render : function() {
-      this.$el.empty().attr("id", this.getBoxID()).append(Template(this.model.toJSON())).appendTo("#droppable-area");
+      this.$el.empty()
+              .attr("id", this.getBoxID())
+              .data("model", this.model.toJSON())
+              .append(Template(this.model.toJSON()))
+              .appendTo("#droppable-area");
 
       console.log(this.getBoxID());
 
@@ -48,36 +63,80 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
         jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
             anchor: "TopRight",
-            isSource: true
+            maxConnections: 1,
+            isSource: true,
+            paintStyle: this.outputStyle
         });
 
+        // Check if there are more than 2 outputs
         if (this.model.get('outputs') >= 2) {
           jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
             anchor: "BottomRight",
-            isSource: true
+            isSource: true,
+            maxConnections: 1,
+            paintStyle: this.outputStyle
           });
         }
       }
 
       // Initialize Inputs
       if (this.model.get('inputs') >= 1) {
-        jsPlumb.addEndpoint(this.getBoxID(), {
+        var start1 = jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
             anchor: "TopLeft",
-            isTarget: true
+            maxConnections: 1,
+            isTarget: true,
+            paintStyle: this.inputStyle
         });
 
+        // Check if there are more than 2 inputs
         if (this.model.get('inputs') >= 2) {
-          jsPlumb.addEndpoint(this.getBoxID(), {
+          var start2 = jsPlumb.addEndpoint(this.getBoxID(), {
             endpoint: "Dot",
             anchor: "BottomLeft",
-            isTarget: true
+            maxConnections: 1,
+            isTarget: true,
+            paintStyle: this.inputStyle
           });
         }
       }
 
       return this.$el;
+    },
+
+    addConnection: function(info) {
+      if (info.from) {
+        var prevs = this.model.get('prev');
+
+        if (!_(prevs).contains(info.from)) {
+          prevs.push(info.from);
+          this.model.set('prev', prevs);
+        }
+      }
+
+      if (info.to) {
+        var nexts = this.model.get('next');
+
+        if (!_(nexts).contains(info.to)) {
+          nexts.push(info.to);
+          this.model.set('next', nexts);
+        }
+      }
+    },
+
+    removeConnection: function(info) {
+      if (info.from) {
+        var prevs = this.model.get('prev');
+        prevs = _(prevs).without(info.from);
+        this.model.set('prev', prevs);
+      }
+
+      if (info.to) {
+        var nexts = this.model.get('next');
+        nexts = _(nexts).without(info.to);
+        this.model.set('next', nexts);
+      }
     }
   });
 });

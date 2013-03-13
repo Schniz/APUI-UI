@@ -8,7 +8,9 @@ define(['jquery', 'backbone', 'underscore'], function($, Backbone, _) {
       id: 999,
       attributes: [],
       next: [],
-      prev: []
+      prev: [],
+      inputTypes: ['string'],
+      outputType: 'string'
     },
 
     initialize: function(model) {

@@ -27,5 +27,7 @@ require.config({
 });
 
 require(['jquery', 'jsplumb', 'views/app', 'jquery-ui'], function($, jsPlumb, AppView) {
-  new AppView;
+  window.appEvents = _.extend({}, Backbone.Events);
+
+  this.app = new AppView;
 });
