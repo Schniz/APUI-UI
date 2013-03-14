@@ -11,9 +11,14 @@ require.config({
     'jsplumb': 'vendor/jsplumb/jsplumb.1.3.9',
     'hogan': 'http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0',
 
-    'bootstrap': 'vendor/bootstrap/js/bootstrap-affix'
+    'prettify' : 'vendor/google-code-prettify-lite/prettify',
+    'bootstrap': 'vendor/bootstrap/js/bootstrap-affix',
+    'zeroclipboard' : 'vendor/zeroclipboard/ZeroClipboard.min'
   },
   shim: {
+    'prettify' : {
+      exports: 'prettyPrint'
+    },
     'jquery-ui' : {
       //These script dependencies should be loaded before loading
       //backbone.js
@@ -21,6 +26,10 @@ require.config({
       //Once loaded, use the global 'Backbone' as the
       //module value.
       exports: '$'
+    },
+
+    'zeroclipboard': {
+      exports: 'ZeroClipboard'
     },
 
     'bootstrap' : {
@@ -48,7 +57,15 @@ require.config({
   }
 });
 
-require(['jquery', 'jsplumb', 'views/app', 'xml-builder', 'jquery-ui', 'bootstrap'], function($, jsPlumb, AppView, XmlBuilder) {
+require(['jquery', 'jsplumb', 'views/app', 'xml-builder', 'zeroclipboard', 'prettify', 'jquery-ui', 'bootstrap'], function($, jsPlumb, AppView, XmlBuilder, ZeroClipboard, Prettify) {
+  var clip = new ZeroClipboard( document.getElementById("copy-button"), {
+  moviePath: "/scripts/vendor/zeroclipboard/ZeroClipboard.swf"
+} );
+
+  clip.on( 'complete', function(client, args) {
+  this.style.display = 'none'; // "this" is the element that was clicked
+  alert("Copied text to clipboard: " + args.text );
+} );
   window.appEvents = _.extend({}, Backbone.Events);
 
   this.xmlBuilder = XmlBuilder;

@@ -6,6 +6,8 @@
     "jquery": null,
     "backbone-amd": null,
     "underscore-amd": null,
-    "jquery.ui": null
+    "jquery.ui": null,
+    "google-code-prettify-lite": null,
+    "zeroclipboard": null
   }
 }

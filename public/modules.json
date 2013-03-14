@@ -1,0 +1,34 @@
+{
+  "Example" : [
+    {
+      "attributes": [
+        { "name": "bla", "label": "Blabla", "type": "text" },
+        { "name": "mail", "label": "Email", "type": "email" },
+        { "name": "ho", "label": "Hohoho", "type": "text", "value": "My Value" }
+      ],
+      "outputs": 2,
+      "inputs": 1,
+      "inputTypes": ["int"],
+      "tag": "IntNisso",
+      "label": "Int:Nisso"
+    },
+    {
+      "attributes": [
+        { "name": "bla", "label": "Blabla", "type": "text" },
+        { "name": "mail", "label": "Email", "type": "email" },
+        { "name": "ho", "label": "Hohoho", "type": "text", "value": "My Value" }
+      ],
+      "outputs": 2,
+      "inputs": 2,
+      "label": "Nisso",
+      "tag": "Nisso"
+    }
+  ],
+  "Example2" : [
+    {
+      "outputs": 1,
+      "inputs": 1,
+      "tag": "DefaultTag"
+    }
+  ]
+}

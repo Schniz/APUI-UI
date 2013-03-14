@@ -43,18 +43,13 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'hgn!staches/box', 'jquer
     },
 
     updateAttributes : function(e) {
-      this.$el.find("input").each($.proxy(function(index, value) {
-        var $value = $(value);
-        var rel = $value.attr("data-name");
-        console.log(rel);
-        var attributes = {};
+      var $value = $(e.target);
+      var rel = $value.attr("data-name");
+      var value = $value.val();
 
-        attributes[rel] = $value.val();
-
-        _(attributes).extend(this.model.get('attributes'));
-
-        console.log(attributes);
-      }, this));
+      _(this.model.get('attributes')).filter(function(e) {
+        return e.name === rel;
+      })[0].value = value;
     },
 
     getBoxID : function() {

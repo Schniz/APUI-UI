@@ -8,10 +8,21 @@
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="css/bootstrap.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="scripts/vendor/google-code-prettify-lite/prettify.css" />
     <style>
       .nav-pills, .nav-tabs {
         margin-bottom: 10px;
         margin-top: 10px;
+      }
+
+      .icon-github {
+        background-image: url('http://www.iconsdb.com/icons/preview/white/github-9-xxl.png');
+        background-size: 24px 24px;
+        background-repeat: no-repeat;
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        vertical-align: middle;
       }
 
       .box-wrapper {
@@ -86,6 +97,28 @@
     </div>
 
     <div class="container" id="droppable-area">
+    </div>
+
+    <div class="modal fade" role="dialog" id="xmlExport">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Grab your XML!</h4>
+          </div>
+          <div class="modal-body">
+<pre id="exported-xml" class="prettyprint languague-xml">
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;/html&gt;
+</pre>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-primary" id="share-with-github"><i class="icon-github"></i> Share with GitHub</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dalog -->
     </div>
 
     <script data-main="scripts/main" src="scripts/vendor/requirejs/require.js"></script>

@@ -39,6 +39,16 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'views/box', 'views/comma
         }
       });
 
+      $(".export-xml").click($.proxy(function() {
+        $("pre#exported-xml").empty().text(this.prettyPrintXml(this.createXml()));
+        prettyPrint();
+      }, this));
+
+      $("#share-with-github").click(function(e) {
+        e.preventDefault();
+        alert("Haven't written dat stuff yet!", "bunneh");
+      });
+
     },
 
     addBlock : function(params) {
@@ -52,8 +62,6 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'views/box', 'views/comma
         console.log(id);
         return (connection.sourceId == id) || (connection.targetId == id);
       });
-
-      console.log(model.id, connections);
     },
 
     addedConnection: function(properties) {
@@ -132,6 +140,30 @@ define(['jquery', 'backbone', 'underscore', 'jsplumb', 'views/box', 'views/comma
       });
 
       return generatedXml;
+    },
+
+    prettyPrintXml: function (xmlStuff, indent) {
+      indent = indent || 0;
+      
+      if (xmlStuff.nodeType === 3) {
+         return (new Array(indent*2)).join(" ") + xmlStuff.textContent + "\n";
+      }
+      
+      var attributes = [xmlStuff.nodeName];
+      _(xmlStuff.attributes).each(function(attr) {
+        attributes.push(attr.name + "=\"" + attr.value + "\"");
+      });
+
+      output = new Array(indent*2).join(" ") + "<" + attributes.join(" ") + ">\n"
+      _(xmlStuff.childNodes).each(function (e) {
+        output += this.prettyPrintXml(e, indent+1);
+      }, this);
+      output += new Array(indent*2).join(" ") + "</" + xmlStuff.nodeName + ">";
+      if (indent>0) {
+        output += "\n";
+      }
+
+      return output;
     }
   });
 });

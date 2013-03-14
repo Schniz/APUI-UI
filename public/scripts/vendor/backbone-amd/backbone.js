@@ -1508,7 +1508,7 @@
     });
     this._isSerializing = false;
     return json;
-  }
+  };
 
   return Backbone;
 }));

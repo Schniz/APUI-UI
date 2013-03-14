@@ -1,11 +1,12 @@
 define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'models/command', 'models/module', 'collections/modules'], function($, Backbone, _, Template, Command, Module, Modules) {
   return Backbone.View.extend({
     el: $("#command-palette"),
-    modules: null,
+    modules: new Modules,
 
     initialize: function() {
       this.initializeData();
       this.render();
+      this.modules.bind("reset", this.render, this);
     },
 
     events: {
@@ -22,42 +23,57 @@ define(['jquery', 'backbone', 'underscore', 'hgn!staches/command.palette', 'mode
     },
 
     initializeData: function() {
-      window.cmd1 = new Command({
-        attributes: [
-          { name: 'bla', label: "Blabla", type: "text" },
-          { name: 'mail', label: "Email", type: "email" },
-          { name: 'ho', label: "Hohoho", type: "text", value: 'My Value' }
-        ],
-        outputs: 2,
-        inputs: 2,
-        label: "Nisso",
-        tag: "Nisso"
+      // window.cmd1 = new Command({
+      //   attributes: [
+      //     { name: 'bla', label: "Blabla", type: "text" },
+      //     { name: 'mail', label: "Email", type: "email" },
+      //     { name: 'ho', label: "Hohoho", type: "text", value: 'My Value' }
+      //   ],
+      //   outputs: 2,
+      //   inputs: 2,
+      //   label: "Nisso",
+      //   tag: "Nisso"
+      // });
+
+      // window.cmd2 = new Command({
+      //   attributes: [
+      //     { name: 'bla', label: "Blabla", type: "text" },
+      //     { name: 'mail', label: "Email", type: "email" },
+      //     { name: 'ho', label: "Hohoho", type: "text", value: 'My Value' }
+      //   ],
+      //   outputs: 2,
+      //   inputs: 1,
+      //   inputTypes: ['int'],
+      //   tag: 'IntNisso',
+      //   label: "Int:Nisso"
+      // });
+
+      // var command = new Command({
+      //   outputs: 1,
+      //   inputs: 1,
+      //   tag: 'DefaultTag'
+      // });
+
+
+      // var module = new Module({commands: [cmd1, cmd2], name: 'Example'});
+      // var module2 = new Module({commands: [command], name: 'Example2'});
+
+      $.ajax({
+        url: '/modules.json',
+        dataType: 'json',
+        success: $.proxy(function(data) {
+          var modulesArray = _(data).map(function(module, moduleName) {
+            var commands = _(module).map(function(command) {
+              return new Command(command);
+            })
+            var module = new Module({commands: commands, name: moduleName});
+
+            return module;
+          }, this);
+
+          this.modules.reset(modulesArray, {silent: false});
+        }, this)
       });
-
-      window.cmd2 = new Command({
-        attributes: [
-          { name: 'bla', label: "Blabla", type: "text" },
-          { name: 'mail', label: "Email", type: "email" },
-          { name: 'ho', label: "Hohoho", type: "text", value: 'My Value' }
-        ],
-        outputs: 2,
-        inputs: 1,
-        inputTypes: ['int'],
-        tag: 'IntNisso',
-        label: "Int:Nisso"
-      });
-
-      var command = new Command({
-        outputs: 1,
-        inputs: 1,
-        tag: 'DefaultTag'
-      });
-
-
-      var module = new Module({commands: [cmd1, cmd2], name: 'Example'});
-      var module2 = new Module({commands: [command], name: 'Example2'});
-
-      this.modules = new Modules([module, module2]);
     },
 
     findByTag: function(tagName) {
